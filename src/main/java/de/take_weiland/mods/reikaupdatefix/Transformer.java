@@ -1,4 +1,4 @@
-package de.take_weiland.mods.reika16fix;
+package de.take_weiland.mods.reikaupdatefix;
 
 import net.minecraft.launchwrapper.IClassTransformer;
 import org.objectweb.asm.ClassReader;
@@ -6,8 +6,7 @@ import org.objectweb.asm.ClassVisitor;
 import org.objectweb.asm.ClassWriter;
 import org.objectweb.asm.MethodVisitor;
 
-import static org.objectweb.asm.ClassReader.SKIP_FRAMES;
-import static org.objectweb.asm.ClassWriter.COMPUTE_MAXS;
+import static org.objectweb.asm.ClassWriter.COMPUTE_FRAMES;
 import static org.objectweb.asm.Opcodes.*;
 
 /**
@@ -16,14 +15,14 @@ import static org.objectweb.asm.Opcodes.*;
 public final class Transformer implements IClassTransformer {
     @Override
     public byte[] transform(String name, String transformedName, byte[] bytes) {
-        if (bytes == null || !name.equals("Reika.DragonAPI.Auxiliary.CommandableUpdateChecker$UpdateChecker")) {
+        if (bytes == null || !name.equals("Reika.DragonAPI.Auxiliary.Trackers.CommandableUpdateChecker$UpdateChecker")) {
             return bytes;
         }
 
         ClassReader cr = new ClassReader(bytes);
-        ClassWriter cw = new ClassWriter(cr, COMPUTE_MAXS);
+        ClassWriter cw = new ClassWriter(cr, COMPUTE_FRAMES);
         ClassVisitor cv = new VersionCheckDisabler(cw);
-        cr.accept(cv, SKIP_FRAMES);
+        cr.accept(cv, 0);
         return cw.toByteArray();
     }
 
@@ -35,7 +34,7 @@ public final class Transformer implements IClassTransformer {
 
         @Override
         public void visit(int version, int access, String name, String signature, String superName, String[] interfaces) {
-            super.visit(V1_5, access, name, signature, superName, interfaces);
+            super.visit(V1_7, access, name, signature, superName, interfaces);
         }
 
         @Override
